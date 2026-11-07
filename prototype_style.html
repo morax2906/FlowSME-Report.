@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bản Mẫu Giao Diện Tương Tác (Interactive Prototype) – FlowSME</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,400&family=Segoe+UI:wght@400;500;600;700&family=Consolas&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #faf6ef;
+      --paper-2: #f4ecdf;
+      --paper-card: #fffdfa;
+      --ink: #2e251f;
+      --ink-soft: #635347;
+      --title: #4a2d1e;
+      --coffee-dark: #40281d;
+      --accent: #a86632;
+      --accent-soft: #f5e9d9;
+      --accent-hover: #8f5224;
+      --caramel: #c6813e;
+      --sage: #4f6e52;
+      --sage-soft: #e2ede3;
+      --rose: #a24b3d;
+      --rose-soft: #f7e4e1;
+      --line: #d9caba;
+      --line-subtle: #eae0d4;
+      --shadow: 0 10px 30px rgba(74, 52, 36, 0.08);
+      --shadow-hover: 0 16px 40px rgba(74, 52, 36, 0.12);
+      --radius: 18px;
+      --radius-sm: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--paper);
+      color: var(--ink);
+      font-family: "Segoe UI", Arial, sans-serif;
+      line-height: 1.6;
+      padding-bottom: 60px;
+      min-height: 100vh;
+    }
+
+    /* TOP DEMO CONTROL BAR (Cố định phía trên để điều hướng trình diễn) */
+    .demo-nav-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(250, 246, 239, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 2px solid var(--line);
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 4px 20px rgba(74, 52, 36, 0.06);
+    }
+    .demo-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .demo-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--title);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Lora", serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    .demo-title-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .demo-title {
+      font-family: "Lora", serif;
+      font-weight: 700;
+      font-size: 0.98rem;
+      color: var(--coffee-dark);
+      line-height: 1.2;
+    }
+    .demo-subtitle {
+      font-size: 0.76rem;
+      color: var(--accent);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Navigation Tabs */
+    .tab-pills {
+      display: flex;
+      gap: 6px;
+      background: var(--paper-2);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+    }
+    .tab-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--ink-soft);
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .tab-btn:hover {
+      color: var(--coffee-dark);
+      background: rgba(255, 255, 255, 0.5);
+    }
+    .tab-btn.active {
+      background: #fff;
+      color: var(--coffee-dark);
+      box-shadow: 0 2px 8px rgba(74, 52, 36, 0.1);
+      border: 1px solid var(--line-subtle);
+    }
+    .tab-badge {
+      font-size: 0.7rem;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 1px 6px;
+      border-radius: 999px;
+      font-weight: 700;
+    }
+    .tab-btn.active .tab-badge {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .demo-flow-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Page container */
+    .page-container {
+      max-width: min(1200px, calc(100% - 36px));
+      margin: 24px auto 0;
+    }
+
+    /* Header Academic Style for each screen */
+    .screen-meta-card {
+      background: var(--paper-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px 24px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .screen-title {
+      font-family: "Lora", "Times New Roman", serif;
+      color: var(--title);
+      font-size: 1.45rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+    .screen-desc {
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      margin-top: 2px;
+    }
+    .flow-stepper-nav {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    /* Browser Mockup Shell */
+    .browser-frame {
+      background: var(--paper-card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: box-shadow 0.25s ease;
+    }
+    .browser-frame:hover {
+      box-shadow: var(--shadow-hover);
+    }
+    .browser-topbar {
+      background: var(--paper-2);
+      border-bottom: 1px solid var(--line);
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .browser-dots {
+      display: flex;
+      gap: 6px;
+    }
+    .dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+    .dot-red { background: #e06c75; }
+    .dot-yellow { background: #e5c07b; }
+    .dot-green { background: #98c379; }
+    .browser-url {
+      background: #fff;
+      border: 1px solid var(--line-subtle);
+      border-radius: 6px;
+      padding: 4px 14px;
+      font-family: Consolas, monospace;
+      font-size: 0.82rem;
+      color: var(--ink-soft);
+      flex: 1;
+      max-width: 650px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .url-lock {
+      color: var(--sage);
+      font-size: 0.75rem;
+    }
+    .browser-body {
+      padding: 24px;
+    }
+
+    /* Common UI Elements inside Mockups */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .btn-secondary { background: var(--paper-2); color: var(--ink); border: 1px solid var(--line); }
+    .btn-secondary:hover { background: var(--accent-soft); }
+    .btn-success { background: var(--sage); color: #fff; }
+    .btn-success:hover { background: #3d5840; }
+    .btn-danger { background: var(--rose); color: #fff; }
+    .btn-sm { padding: 5px 12px; font-size: 0.8rem; }
+
+    .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .tag-draft { background: var(--paper-2); color: var(--ink-soft); border: 1px solid var(--line); }
+    .tag-pending { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .tag-change { background: var(--accent-soft); color: var(--accent); border: 1px solid var(--caramel); }
+    .tag-approved { background: var(--sage-soft); color: var(--sage); border: 1px solid #c2dcc4; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-label {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.92rem;
+      background: #fff;
+      color: var(--ink);
+      transition: all 0.15s;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(168, 102, 50, 0.15);
+    }
+
+    /* Screen display toggle (mỗi màn hình là 1 trang riêng biệt) */
+    .screen-page {
+      display: none;
+      animation: fadeIn 0.25s ease-in-out;
+    }
+    .screen-page.active-page {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* SCR-01 Form Builder Grid */
+    .builder-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr 280px;
+      gap: 18px;
+    }
+    .panel-box {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+    }
+    .panel-title {
+      font-family: "Lora", serif;
+      font-weight: 700;
+      color: var(--coffee-dark);
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--line);
+    }
+    .palette-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      background: #fff;
+      border: 1px solid var(--line-subtle);
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 0.86rem;
+      cursor: pointer;
+      color: var(--ink);
+      transition: all 0.15s;
+    }
+    .palette-item:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      transform: translateX(3px);
+    }
+    .canvas-box {
+      background: #fff;
+      border: 2px dashed var(--line);
+      border-radius: var(--radius-sm);
+      padding: 20px;
+      min-height: 420px;
+    }
+    .canvas-field {
+      border: 1px solid transparent;
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .canvas-field:hover {
+      border-color: var(--line);
+      background: #fdfbf7;
+    }
+    .canvas-field.active-field {
+      border: 2px solid var(--accent);
+      background: #fffbf7;
+      box-shadow: 0 4px 12px rgba(168, 102, 50, 0.08);
+      position: relative;
+    }
+    .canvas-field.active-field::after {
+      content: "Đang chọn cấu hình";
+      position: absolute;
+      top: -10px;
+      right: 12px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    /* Stepper UI */
+    .stepper {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      margin: 24px 0 32px;
+    }
+    .stepper::before {
+      content: "";
+      position: absolute;
+      top: 18px;
+      left: 50px;
+      right: 50px;
+      height: 3px;
+      background: var(--line);
+      z-index: 1;
+    }
+    .step-item {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      flex: 1;
+    }
+    .step-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #fff;
+      border: 3px solid var(--line);
+      margin: 0 auto 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      transition: all 0.3s ease;
+    }
+    .step-completed .step-circle {
+      background: var(--sage);
+      border-color: var(--sage);
+      color: #fff;
+    }
+    .step-active .step-circle {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 0 5px var(--accent-soft);
+    }
+    .step-rejected .step-circle {
+      background: var(--rose);
+      border-color: var(--rose);
+      color: #fff;
+      box-shadow: 0 0 0 5px var(--rose-soft);
+    }
+    .step-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--coffee-dark);
+    }
+    .step-subtitle {
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+    }
+
+    /* Callout Note */
+    .callout {
+      background: var(--paper-2);
+      border-left: 4px solid var(--accent);
+      padding: 14px 18px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin: 20px 0;
+      font-size: 0.9rem;
+      color: var(--ink);
+    }
+    .callout-title {
+      font-weight: 700;
+      color: var(--coffee-dark);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Dashboard Widgets */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      transition: transform 0.2s;
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+    }
+    .kpi-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--ink-soft);
+      margin-bottom: 6px;
+    }
+    .kpi-value {
+      font-family: "Lora", serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--coffee-dark);
+    }
+    .kpi-diff {
+      font-size: 0.78rem;
+      margin-top: 4px;
+      font-weight: 600;
+    }
+    .diff-pos { color: var(--sage); }
+    .diff-neg { color: var(--rose); }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    /* Toast Notification for Interactive Demo */
+    .demo-toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--coffee-dark);
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.9rem;
+      z-index: 1000;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .demo-toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .toast-icon { font-size: 1.2rem; }
+
+    /* Modal for interactive Resubmit */
+    .demo-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(46, 37, 31, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      place-items: center;
+      z-index: 999;
+    }
+    .demo-modal-overlay.active {
+      display: grid;
+    }
+    .demo-modal {
+      background: var(--paper-card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 24px;
+      width: min(560px, 92%);
+      box-shadow: var(--shadow-hover);
+    }
+
+    @media (max-width: 900px) {
+      .demo-nav-bar { flex-direction: column; align-items: stretch; }
+      .tab-pills { overflow-x: auto; }
+      .builder-layout { grid-template-columns: 1fr; }
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .chart-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BĂNG ĐIỀU HƯỚNG TRÌNH DIỄN (CHUYỂN TRANG THỰC TẾ) -->
+  <header class="demo-nav-bar">
+    <div class="demo-brand">
+      <div class="demo-logo">F</div>
+      <div class="demo-title-group">
+        <span class="demo-title">FlowSME Prototype</span>
+        <span class="demo-subtitle">Hệ thống Quản lý Quy trình No-Code/Low-Code</span>
+      </div>
+    </div>
+
+    <!-- 4 TABS = 4 MÀN HÌNH TRANG KHÁC NHAU -->
+    <nav class="tab-pills" role="tablist">
+      <button class="tab-btn active" onclick="switchScreen(1, this)" id="tab-1">
+        <span>SCR-01</span> Form Builder <span class="tab-badge">Admin</span>
+      </button>
+      <button class="tab-btn" onclick="switchScreen(2, this)" id="tab-2">
+        <span>SCR-02</span> Nộp yêu cầu <span class="tab-badge">Employee</span>
+      </button>
+      <button class="tab-btn" onclick="switchScreen(3, this)" id="tab-3">
+        <span>SCR-03</span> Theo dõi tiến độ <span class="tab-badge">Stepper</span>
+      </button>
+      <button class="tab-btn" onclick="switchScreen(4, this)" id="tab-4">
+        <span>SCR-04</span> Dashboard SLA <span class="tab-badge">Executive</span>
+      </button>
+    </nav>
+
+    <div class="demo-flow-actions">
+      <button class="btn btn-secondary btn-sm" onclick="demoNextScreen()" title="Chuyển sang màn hình kế tiếp trong kịch bản demo">
+        Trang kế tiếp ❯
+      </button>
+    </div>
+  </header>
+
+  <main class="page-container">
+
+    <!-- ========================================================
+         PAGE 1: MÀN HÌNH SCR-01: NO-CODE FORM BUILDER (ADMIN/HR)
+         ======================================================== -->
+    <section class="screen-page active-page" id="screen-page-1">
+      <div class="screen-meta-card">
+        <div>
+          <div class="eyebrow">Màn hình SCR-01 • Dành cho Admin / HR</div>
+          <h1 class="screen-title">No-Code Form Builder & Quản lý Biểu mẫu</h1>
+          <p class="screen-desc">Môi trường kéo thả cấu hình biểu mẫu trực quan, hỗ trợ thiết lập thuộc tính và ràng buộc validation.</p>
+        </div>
+        <div class="flow-stepper-nav">
+          <button class="btn btn-primary" onclick="publishAndGoNext()">
+            Xuất bản & Chuyển sang Nộp đơn ❯
+          </button>
+        </div>
+      </div>
+
+      <div class="browser-frame">
+        <div class="browser-topbar">
+          <div class="browser-dots">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+          </div>
+          <div class="browser-url">
+            <span class="url-lock"></span> https://workflow.sme.internal/admin/form-builder/edit?id=form-advance-payment
+          </div>
+          <div style="margin-left: auto; display: flex; gap: 8px;">
+            <button class="btn btn-secondary btn-sm" onclick="showToast('Đã lưu bản thảo form vào bộ nhớ tạm!')">Lưu nháp</button>
+            <button class="btn btn-primary btn-sm" onclick="publishAndGoNext()">Xuất bản Mẫu</button>
+          </div>
+        </div>
+
+        <div class="browser-body">
+          <div class="builder-layout">
+            <!-- Cột 1: Thư viện trường -->
+            <div class="panel-box">
+              <div class="panel-title">❖ Thư viện trường</div>
+              <div class="palette-item" onclick="selectField('text', 'Văn bản ngắn')"><span>[T]</span> Văn bản ngắn</div>
+              <div class="palette-item" onclick="selectField('textarea', 'Đoạn văn bản')"><span>[¶]</span> Đoạn văn bản</div>
+              <div class="palette-item" onclick="selectField('currency', 'Tiền tệ (VNĐ)')" style="border-color: var(--accent); background: var(--accent-soft);"><span>[#]</span> <strong>Tiền tệ / Số</strong></div>
+              <div class="palette-item" onclick="selectField('date', 'Ngày tháng')"><span>[📅]</span> Ngày tháng</div>
+              <div class="palette-item" onclick="selectField('dropdown', 'Hộp chọn (Dropdown)')"><span>[▼]</span> Hộp chọn</div>
+              <div class="palette-item" onclick="selectField('file', 'Tải lên tài liệu')"><span>[📎]</span> Tải lên tệp</div>
+              <div class="palette-item" onclick="selectField('checkbox', 'Hộp kiểm (Checkbox)')"><span>[☑]</span> Checkbox</div>
+            </div>
+
+            <!-- Cột 2: Canvas thiết kế tương tác -->
+            <div class="canvas-box">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 style="font-family: 'Lora', serif; color: var(--coffee-dark);">Phiếu đề xuất Tạm ứng chi phí</h3>
+                <span class="tag tag-draft">Bản nháp v2.1</span>
+              </div>
+
+              <div class="canvas-field" onclick="selectField('title', 'Tiêu đề yêu cầu')">
+                <label class="form-label">Tiêu đề yêu cầu (*)</label>
+                <input type="text" class="form-input" value="Tạm ứng công tác phí thị trường miền Tây" readonly>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div class="canvas-field" onclick="selectField('dept', 'Phòng ban')">
+                  <label class="form-label">Phòng ban đề xuất (*)</label>
+                  <select class="form-select" disabled><option>Phòng Kỹ thuật Giải pháp</option></select>
+                </div>
+                <div class="canvas-field" onclick="selectField('deadline', 'Thời hạn hoàn ứng')">
+                  <label class="form-label">Thời hạn nộp chứng từ hoàn ứng (*)</label>
+                  <input type="text" class="form-input" value="15/11/2026" readonly>
+                </div>
+              </div>
+
+              <div class="canvas-field active-field" id="canvas-field-amount" onclick="selectField('currency', 'Số tiền đề xuất tạm ứng (VNĐ)')">
+                <label class="form-label" style="color: var(--accent); font-weight: 700;">Số tiền đề xuất tạm ứng (VNĐ) (*)</label>
+                <input type="text" class="form-input" value="18,500,000" style="border-color: var(--accent); font-weight: bold; color: var(--coffee-dark);">
+              </div>
+
+              <div class="canvas-field" onclick="selectField('file', 'Tài liệu dự toán đính kèm')">
+                <label class="form-label">Tài liệu dự toán đính kèm</label>
+                <div style="border: 1px dashed var(--line); border-radius: 6px; padding: 14px; text-align: center; color: var(--ink-soft); font-size: 0.85rem; background: var(--paper-2);">
+                  + Kéo thả tệp dự toán PDF/Excel vào đây...
+                </div>
+              </div>
+            </div>
+
+            <!-- Cột 3: Thuộc tính trường -->
+            <div class="panel-box" id="properties-panel">
+              <div class="panel-title">⚙ Thuộc tính trường</div>
+              <div class="form-group">
+                <label class="form-label">Nhãn hiển thị (Label)</label>
+                <input type="text" class="form-input" id="prop-label" value="Số tiền đề xuất tạm ứng (VNĐ)">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Kiểu dữ liệu</label>
+                <input type="text" class="form-input" id="prop-type" value="Tiền tệ / Số nguyên" readonly style="background: var(--paper-2);">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Ràng buộc thẩm định</label>
+                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.85rem; margin-bottom: 6px;">
+                  <input type="checkbox" checked> Bắt buộc nhập (Required)
+                </label>
+                <label style="display: flex; align-items: center; gap: 6px; font-size: 0.85rem;">
+                  <input type="checkbox" checked> Giới hạn tối thiểu: 100,000đ
+                </label>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Định dạng hiển thị</label>
+                <select class="form-select">
+                  <option selected>Tiền tệ VNĐ (dấu phẩy ngăn cách)</option>
+                  <option>Số nguyên thông thường</option>
+                </select>
+              </div>
+              <button class="btn btn-secondary btn-sm" style="width: 100%; justify-content: center; margin-top: 10px;" onclick="showToast('Đã áp dụng thuộc tính mới cho trường!')">
+                Áp dụng thay đổi
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         PAGE 2: MÀN HÌNH SCR-02: NỘP ĐƠN YÊU CẦU (EMPLOYEE - UC03)
+         ======================================================== -->
+    <section class="screen-page" id="screen-page-2">
+      <div class="screen-meta-card">
+        <div>
+          <div class="eyebrow">Màn hình SCR-02 • Dành cho Nhân viên (Employee) – Minh họa UC03</div>
+          <h1 class="screen-title">Khởi tạo và Nộp đơn Yêu cầu phê duyệt</h1>
+          <p class="screen-desc">Điền thông tin đề xuất tạm ứng công tác phí, tải chứng từ minh chứng và gửi vào quy trình duyệt tự động.</p>
+        </div>
+        <div class="flow-stepper-nav">
+          <button class="btn btn-secondary btn-sm" onclick="switchScreen(1, document.getElementById('tab-1'))">❮ Về Form Builder</button>
+          <button class="btn btn-primary" onclick="submitRequestForm()">
+           Nộp đơn & Chuyển sang Theo dõi ❯
+          </button>
+        </div>
+      </div>
+
+      <div class="browser-frame">
+        <div class="browser-topbar">
+          <div class="browser-dots">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+          </div>
+          <div class="browser-url">
+            <span class="url-lock"></span> https://workflow.sme.internal/employee/request/create?template=advance-payment
+          </div>
+        </div>
+
+        <div class="browser-body">
+          <form id="request-submit-form" onsubmit="event.preventDefault(); submitRequestForm();" style="background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--line); padding-bottom: 12px;">
+              <div>
+                <h2 style="font-family: 'Lora', serif; color: var(--coffee-dark); font-size: 1.3rem;">PHIẾU ĐỀ XUẤT TẠM ỨNG CHI PHÍ</h2>
+                <div style="font-size: 0.85rem; color: var(--ink-soft); margin-top: 2px;">
+                  Người đề nghị: <strong>Trương Đoàn Công Thành</strong> (Mã NV: EMP-24120451) | Phòng Kỹ thuật Giải pháp
+                </div>
+              </div>
+              <span class="tag tag-pending" id="badge-form-status">Khởi tạo mới</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Tiêu đề yêu cầu <span style="color: var(--accent);">*</span></label>
+              <input type="text" class="form-input" id="req-title" required value="Tạm ứng công tác phí khảo sát hệ thống khách hàng Cần Thơ - An Giang">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Lý do & Kế hoạch sử dụng tạm ứng chi tiết <span style="color: var(--accent);">*</span></label>
+              <textarea class="form-textarea" id="req-reason" rows="3" required>Chi trả vé máy bay, khách sạn và chi phí di chuyển công tác thực tế từ ngày 05/11 đến 08/11/2026 theo Quyết định cử công tác số 42/QĐ-TGĐ ngày 28/10/2026.</textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div class="form-group">
+                <label class="form-label">Số tiền đề xuất tạm ứng (VNĐ) <span style="color: var(--accent);">*</span></label>
+                <input type="text" class="form-input" id="req-amount" required value="18,500,000" style="font-weight: bold; color: var(--coffee-dark);">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Thời hạn nộp chứng từ hoàn ứng <span style="color: var(--accent);">*</span></label>
+                <input type="date" class="form-input" id="req-date" required value="2026-11-15">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Tài liệu minh chứng đính kèm (PDF, Excel, Ảnh)</label>
+              <div style="background: #fff; border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 12px;" id="file-list-box">
+                <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; padding: 6px 0; border-bottom: 1px solid var(--line-subtle);">
+                  <span>📄 <strong>Ke_hoach_cong_tac_CanTho.pdf</strong> (1.8 MB)</span>
+                  <span style="color: var(--sage); font-weight: 600;">✓ Đã quét an toàn</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; padding: 6px 0;">
+                  <span>📄 <strong>Du_toan_chi_phi_khach_san_ve_xe.xlsx</strong> (420 KB)</span>
+                  <span style="color: var(--sage); font-weight: 600;">✓ Đã quét an toàn</span>
+                </div>
+              </div>
+              <button type="button" class="btn btn-secondary btn-sm" style="margin-top: 8px;" onclick="addSampleFile()">
+                + Đính kèm thêm tài liệu giả lập
+              </button>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; border-top: 1px solid var(--line); padding-top: 16px;">
+              <button type="button" class="btn btn-secondary" onclick="showToast('Đã lưu bản nháp vào mục Yêu cầu cá nhân!')"> Lưu bản nháp</button>
+              <button type="submit" class="btn btn-primary"> Gửi yêu cầu phê duyệt</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         PAGE 3: MÀN HÌNH SCR-03: THEO DÕI TIẾN ĐỘ & STEPPER (UC04)
+         ======================================================== -->
+    <section class="screen-page" id="screen-page-3">
+      <div class="screen-meta-card">
+        <div>
+          <div class="eyebrow">Màn hình SCR-03 • Dành cho Nhân viên / Cấp duyệt – Minh họa UC04 & UC05</div>
+          <h1 class="screen-title">Theo dõi Tiến trình Phê duyệt & Xử lý Nộp lại</h1>
+          <p class="screen-desc">Quan sát trạng thái đơn qua Stepper 3 bước, nhận phản hồi yêu cầu bổ sung chứng từ và gửi lại (Resubmit).</p>
+        </div>
+        <div class="flow-stepper-nav">
+          <button class="btn btn-secondary btn-sm" onclick="switchScreen(2, document.getElementById('tab-2'))">❮ Về Form Nộp đơn</button>
+          <button class="btn btn-primary" onclick="switchScreen(4, document.getElementById('tab-4'))">
+            Xem Dashboard Giám đốc ❯
+          </button>
+        </div>
+      </div>
+
+      <div class="browser-frame">
+        <div class="browser-topbar">
+          <div class="browser-dots">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+          </div>
+          <div class="browser-url">
+            <span class="url-lock"></span> https://workflow.sme.internal/employee/request/track/REQ-2026-0891
+          </div>
+          <div style="margin-left: auto;">
+            <button class="btn btn-secondary btn-sm" onclick="window.print()">🖨 In phiếu</button>
+          </div>
+        </div>
+
+        <div class="browser-body">
+          <!-- Header đơn -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 12px;">
+            <div>
+              <h2 style="font-family: 'Lora', serif; color: var(--coffee-dark); font-size: 1.28rem;">YÊU CẦU: REQ-2026-0891 – Tạm ứng công tác phí miền Tây</h2>
+              <div style="font-size: 0.83rem; color: var(--ink-soft); margin-top: 2px;">
+                Người tạo: <strong>Trương Đoàn Công Thành</strong> | Ngày nộp: 29/10/2026 09:15 | Phiên bản: <strong id="req-version-tag">v1.0</strong>
+              </div>
+            </div>
+            <span class="tag tag-change" id="main-status-tag"> Cần chỉnh sửa (Change Requested)</span>
+          </div>
+
+          <!-- THANH TIẾN TRÌNH STEPPER ĐA CẤP -->
+          <div class="stepper" id="workflow-stepper">
+            <div class="step-item step-completed" id="step-node-1">
+              <div class="step-circle">✓</div>
+              <div class="step-title">Bước 1: Trưởng phòng</div>
+              <div class="step-subtitle" id="step-sub-1">Lã Chính Nhân (Đã duyệt)</div>
+            </div>
+            <div class="step-item step-active" id="step-node-2">
+              <div class="step-circle" id="step-icon-2">!</div>
+              <div class="step-title">Bước 2: Kế toán trưởng</div>
+              <div class="step-subtitle" style="color: var(--accent); font-weight: 600;" id="step-sub-2">Yêu cầu chỉnh sửa</div>
+            </div>
+            <div class="step-item" id="step-node-3">
+              <div class="step-circle">3</div>
+              <div class="step-title">Bước 3: Giám đốc Tài chính</div>
+              <div class="step-subtitle" id="step-sub-3">Phạm Anh Kiệt (Chờ duyệt)</div>
+            </div>
+          </div>
+
+          <!-- KHỐI PHẢN HỒI Ý KIẾN TỪ CẤP QUẢN LÝ -->
+          <div class="callout" id="manager-feedback-box">
+            <div class="callout-title">
+              <span>💬 Ý kiến phản hồi từ Kế toán trưởng (Nguyễn Tấn Thành):</span>
+            </div>
+            <div id="feedback-text">
+              "Dự toán tiền phòng khách sạn 950.000đ/đêm đang vượt khung định mức công tác bậc 2 (tối đa 800.000đ/đêm). Đề nghị nhân viên bổ sung giải trình lý do vượt mức hoặc cập nhật lại báo giá của khách sạn khác tương đương."
+            </div>
+            <div style="font-size: 0.8rem; color: var(--ink-soft); margin-top: 8px;">
+              Thời gian phản hồi: <strong>29/10/2026 14:15</strong> | Hạn chót bổ sung SLA: <strong>31/10/2026 17:00</strong>
+            </div>
+          </div>
+
+          <!-- Dữ liệu đề xuất tóm tắt -->
+          <div style="background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 16px; margin: 20px 0;">
+            <div style="font-weight: 700; color: var(--coffee-dark); margin-bottom: 8px; font-size: 0.9rem;">
+              Dữ liệu đề xuất hiện tại:
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; font-size: 0.88rem;">
+              <div>Số tiền tạm ứng: <strong id="display-amount">18,500,000 VNĐ</strong></div>
+              <div>Hạn hoàn ứng: <strong>15/11/2026</strong></div>
+              <div>Số lượng tệp đính kèm: <strong id="display-files-count">2 tệp</strong></div>
+            </div>
+          </div>
+
+          <!-- Khối thao tác (Dành cho demo) -->
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line); padding-top: 16px;">
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <span style="font-size: 0.8rem; color: var(--ink-soft); font-weight: 600;">Giả lập hành động Quản lý:</span>
+              <button class="btn btn-secondary btn-sm" onclick="simulateManagerApprove()">Giả lập: Duyệt Bước 2</button>
+              <button class="btn btn-secondary btn-sm" onclick="simulateManagerReject()">Giả lập: Từ chối</button>
+            </div>
+            <div style="display: flex; gap: 10px;">
+              <button class="btn btn-danger btn-sm" style="background: none; color: var(--rose); border: 1px solid var(--rose);" onclick="cancelRequestDemo()">Hủy yêu cầu</button>
+              <button class="btn btn-primary" onclick="openResubmitModal()"> Chỉnh sửa & nộp lại (Resubmit)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         PAGE 4: MÀN HÌNH SCR-04: DASHBOARD SLA (BAN GIÁM ĐỐC)
+         ======================================================== -->
+    <section class="screen-page" id="screen-page-4">
+      <div class="screen-meta-card">
+        <div>
+          <div class="eyebrow">Màn hình SCR-04 • Dành cho Ban Giám đốc – Minh họa UC08</div>
+          <h1 class="screen-title">Báo cáo Tổng hợp Vận hành & Giám sát SLA</h1>
+          <p class="screen-desc">Theo dõi chỉ số hiệu suất xử lý hồ sơ toàn công ty, nhận diện các điểm nghẽn quy trình giữa các phòng ban.</p>
+        </div>
+        <div class="flow-stepper-nav">
+          <button class="btn btn-secondary btn-sm" onclick="switchScreen(3, document.getElementById('tab-3'))">❮ Về Theo dõi Stepper</button>
+          <button class="btn btn-primary" onclick="showToast('Đã kết xuất báo cáo tháng 10/2026 ra tệp Excel & PDF!')">
+            Xuất báo cáo PDF/Excel
+          </button>
+        </div>
+      </div>
+
+      <div class="browser-frame">
+        <div class="browser-topbar">
+          <div class="browser-dots">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+          </div>
+          <div class="browser-url">
+            <span class="url-lock"> </span> https://workflow.sme.internal/executive/analytics/dashboard?period=2026-10
+          </div>
+          <div style="margin-left: auto;">
+            <select class="form-select" style="padding: 4px 10px; font-size: 0.82rem;" onchange="showToast('Đang cập nhật số liệu: ' + this.value)">
+              <option>Kỳ báo cáo: Tháng 10/2026</option>
+              <option>Kỳ báo cáo: Quý 3/2026</option>
+              <option>Kỳ báo cáo: Năm 2026</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="browser-body">
+          <!-- 4 Thẻ KPI chính -->
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div class="kpi-label">Tổng số yêu cầu</div>
+              <div class="kpi-value">1,248</div>
+              <div class="kpi-diff diff-pos">▲ +12% so với tháng trước</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Tỷ lệ phê duyệt</div>
+              <div class="kpi-value">86.4%</div>
+              <div class="kpi-diff diff-pos">▲ Tăng 4.2% hiệu suất</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Thời gian duyệt TB</div>
+              <div class="kpi-value">3.2 h</div>
+              <div class="kpi-diff diff-pos">▼ Rút ngắn 1.1 giờ/đơn</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Đơn trễ hạn SLA</div>
+              <div class="kpi-value">14</div>
+              <div class="kpi-diff diff-neg">1.1% tổng số hồ sơ</div>
+            </div>
+          </div>
+
+          <!-- 2 Cột biểu đồ & Phân tích điểm nghẽn -->
+          <div class="chart-grid">
+            <!-- Phân bổ phòng ban -->
+            <div class="panel-box">
+              <div class="panel-title">Phân bổ hồ sơ theo phòng ban</div>
+              <div style="font-size: 0.88rem; line-height: 2.1;">
+                <div style="display: flex; justify-content: space-between;">
+                  <span>Phòng Kinh doanh</span> <strong>420 đơn (33.6%)</strong>
+                </div>
+                <div style="height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin-bottom: 8px;">
+                  <div style="width: 33.6%; height: 100%; background: var(--accent);"></div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between;">
+                  <span>Phòng Kỹ thuật & Giải pháp</span> <strong>315 đơn (25.2%)</strong>
+                </div>
+                <div style="height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin-bottom: 8px;">
+                  <div style="width: 25.2%; height: 100%; background: var(--caramel);"></div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between;">
+                  <span>Phòng Nhân sự & Hành chính</span> <strong>210 đơn (16.8%)</strong>
+                </div>
+                <div style="height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin-bottom: 8px;">
+                  <div style="width: 16.8%; height: 100%; background: var(--coffee-dark);"></div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between;">
+                  <span>Phòng Kế toán & Tài chính</span> <strong>163 đơn (13.1%)</strong>
+                </div>
+                <div style="height: 6px; background: var(--line); border-radius: 3px; overflow: hidden;">
+                  <div style="width: 13.1%; height: 100%; background: var(--sage);"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Điểm nghẽn Bottlenecks -->
+            <div class="panel-box">
+              <div class="panel-title">Phân tích điểm nghẽn quy trình (Bottlenecks)</div>
+              <div style="font-size: 0.85rem; color: var(--ink-soft); margin-bottom: 10px;">
+                Các bước xử lý có thời gian chờ lâu nhất cần can thiệp tái cấu trúc:
+              </div>
+              <table style="width: 100%; font-size: 0.84rem; border-collapse: collapse;">
+                <tr style="border-bottom: 1px solid var(--line); text-align: left;">
+                  <th style="padding: 6px 0;">Bước duyệt</th>
+                  <th>Thời gian TB</th>
+                  <th>Đánh giá</th>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--line-subtle);">
+                  <td style="padding: 8px 0;">Kế toán thẩm định chứng từ</td>
+                  <td><strong>8.4 giờ</strong></td>
+                  <td><span class="tag tag-change" style="font-size: 0.7rem;">Chậm</span></td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--line-subtle);">
+                  <td style="padding: 8px 0;">Giám đốc khối duyệt chi phí</td>
+                  <td><strong>6.1 giờ</strong></td>
+                  <td><span class="tag tag-change" style="font-size: 0.7rem;">Cảnh báo</span></td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0;">Trưởng phòng duyệt đơn nghỉ</td>
+                  <td><strong>1.2 giờ</strong></td>
+                  <td><span class="tag tag-approved" style="font-size: 0.7rem;">Rất tốt</span></td>
+                </tr>
+              </table>
+
+              <div style="margin-top: 14px; padding: 10px; background: #fff; border: 1px solid var(--line); border-radius: 6px; font-size: 0.82rem;">
+                💡 <strong>Khuyến nghị tối ưu:</strong> Tự động kích hoạt tính năng <em>Ủy quyền phê duyệt</em> khi cấp quản lý vắng mặt quá 4 giờ để không vi phạm SLA.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL RESUBMIT GIẢ LẬP KHI BẤM NỘP LẠI (INTERACTIVE DEMO) -->
+  <div class="demo-modal-overlay" id="modal-resubmit">
+    <div class="demo-modal">
+      <h3 style="font-family: 'Lora', serif; color: var(--coffee-dark); margin-bottom: 12px; font-size: 1.25rem;">
+        Chỉnh sửa & Nộp lại yêu cầu REQ-2026-0891
+      </h3>
+      <p style="font-size: 0.88rem; color: var(--ink-soft); margin-bottom: 16px;">
+        Vui lòng giải trình hoặc điều chỉnh theo phản hồi của Kế toán trưởng:
+      </p>
+
+      <div class="form-group">
+        <label class="form-label">Số tiền tạm ứng điều chỉnh (VNĐ)</label>
+        <input type="text" class="form-input" id="modal-edit-amount" value="16,800,000">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Nội dung giải trình bổ sung</label>
+        <textarea class="form-textarea" id="modal-edit-note" rows="3">Đã chọn lại Khách sạn Bến Ninh Kiều (giá 780.000đ/đêm) đúng theo khung định mức công tác bậc 2 và đính kèm báo giá so sánh.</textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Tài liệu bổ sung đính kèm</label>
+        <div style="font-size: 0.85rem; color: var(--sage); padding: 6px 0;">
+          📎 <strong>Bao_gia_so_sanh_khach_san.pdf</strong> (Đã tải lên)
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+        <button class="btn btn-secondary btn-sm" onclick="closeResubmitModal()">Đóng</button>
+        <button class="btn btn-primary" onclick="confirmResubmit()">✓ Xác nhận Nộp lại (Resubmit v2.0)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST THÔNG BÁO TƯƠNG TÁC -->
+  <div class="demo-toast" id="demo-toast">
+    <span class="toast-icon"> </span>
+    <span id="toast-message">Thông báo hệ thống</span>
+  </div>
+
+  <!-- JAVASCRIPT ĐIỀU KHIỂN CHUYỂN TRANG VÀ KỊCH BẢN TRÌNH DIỄN DEMO -->
+  <script>
+    let currentScreenIndex = 1;
+
+    // Chuyển sang màn hình cụ thể
+    function switchScreen(index, btnElement) {
+      currentScreenIndex = index;
+
+      // Ẩn tất cả các màn hình
+      const screens = document.querySelectorAll('.screen-page');
+      screens.forEach(s => s.classList.remove('active-page'));
+
+      // Bật màn hình được chọn
+      const targetScreen = document.getElementById(`screen-page-${index}`);
+      if (targetScreen) {
+        targetScreen.classList.add('active-page');
+      }
+
+      // Cập nhật trạng thái active của tab navigation
+      const tabs = document.querySelectorAll('.tab-btn');
+      tabs.forEach(t => t.classList.remove('active'));
+      if (btnElement) {
+        btnElement.classList.add('active');
+      } else {
+        const matchingTab = document.getElementById(`tab-${index}`);
+        if (matchingTab) matchingTab.classList.add('active');
+      }
+
+      // Cập nhật URL hash
+      const hashes = ['#admin-builder', '#employee-submit', '#request-track', '#executive-dashboard'];
+      window.location.hash = hashes[index - 1];
+
+      // Cuộn nhẹ lên đầu nội dung
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Chuyển sang màn hình kế tiếp trong kịch bản demo
+    function demoNextScreen() {
+      let nextIndex = currentScreenIndex + 1;
+      if (nextIndex > 4) nextIndex = 1;
+      switchScreen(nextIndex, document.getElementById(`tab-${nextIndex}`));
+    }
+
+    // Toast notification
+    function showToast(message) {
+      const toast = document.getElementById('demo-toast');
+      const text = document.getElementById('toast-message');
+      text.innerText = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+
+    // Màn hình 1: Chọn trường trong Form Builder
+    function selectField(type, name) {
+      const label = document.getElementById('prop-label');
+      const typeInput = document.getElementById('prop-type');
+      if (label && typeInput) {
+        label.value = name;
+        typeInput.value = type.toUpperCase() + ' Component';
+      }
+      showToast(`Đã chọn cấu hình trường: "${name}"`);
+    }
+
+    // Xuất bản từ màn hình 1 và nhảy sang màn hình 2
+    function publishAndGoNext() {
+      showToast('Mẫu biểu "Phiếu đề xuất Tạm ứng chi phí v2.1" đã được xuất bản thành công!');
+      setTimeout(() => {
+        switchScreen(2, document.getElementById('tab-2'));
+      }, 700);
+    }
+
+    // Màn hình 2: Nộp đơn yêu cầu
+    function submitRequestForm() {
+      const amount = document.getElementById('req-amount').value || '18,500,000';
+      showToast('Đang kiểm tra dữ liệu và gửi yêu cầu vào quy trình phê duyệt...');
+
+      setTimeout(() => {
+        showToast('Đã nộp thành công! Yêu cầu REQ-2026-0891 đã gán đến Trưởng phòng (Bước 1)');
+        // Chuyển sang màn hình 3 theo dõi tiến độ
+        setTimeout(() => {
+          switchScreen(3, document.getElementById('tab-3'));
+        }, 800);
+      }, 600);
+    }
+
+    // Thêm tệp mẫu giả lập
+    function addSampleFile() {
+      const box = document.getElementById('file-list-box');
+      const newFile = document.createElement('div');
+      newFile.style.cssText = 'display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem; padding: 6px 0; border-top: 1px solid var(--line-subtle);';
+      newFile.innerHTML = '<span> <strong>Bang_bao_gia_khach_san_so_sanh.pdf</strong> (850 KB)</span><span style="color: var(--sage); font-weight: 600;">✓ Vừa đính kèm</span>';
+      box.appendChild(newFile);
+      showToast('Đã đính kèm thêm tài liệu mới!');
+    }
+
+    // Màn hình 3: Resubmit Modal
+    function openResubmitModal() {
+      document.getElementById('modal-resubmit').classList.add('active');
+    }
+    function closeResubmitModal() {
+      document.getElementById('modal-resubmit').classList.remove('active');
+    }
+    function confirmResubmit() {
+      const newAmount = document.getElementById('modal-edit-amount').value;
+      closeResubmitModal();
+
+      // Cập nhật giao diện Stepper sang Chờ duyệt lại
+      document.getElementById('display-amount').innerText = newAmount + ' VNĐ';
+      document.getElementById('main-status-tag').className = 'tag tag-pending';
+      document.getElementById('main-status-tag').innerText = 'Chờ phê duyệt lại (Pending Approval)';
+      document.getElementById('req-version-tag').innerText = 'v2.0 (Đã chỉnh sửa)';
+
+      const step2 = document.getElementById('step-node-2');
+      step2.className = 'step-item step-completed';
+      document.getElementById('step-icon-2').innerText = '✓';
+      document.getElementById('step-sub-2').innerText = 'Đã cập nhật theo yêu cầu';
+      document.getElementById('step-sub-2').style.color = 'var(--sage)';
+
+      document.getElementById('manager-feedback-box').innerHTML = `
+        <div class="callout-title" style="color: var(--sage);">✓ Yêu cầu đã được nộp lại thành công (v2.0):</div>
+        <div>Nhân viên đã cập nhật lại số tiền (${newAmount} VNĐ) và bổ sung tài liệu giải trình theo yêu cầu của Kế toán trưởng.</div>
+      `;
+
+      showToast('✓ Đã nộp lại yêu cầu thành công! Thông báo đã gửi tới Kế toán trưởng.');
+    }
+
+    // Giả lập Manager Approve
+    function simulateManagerApprove() {
+      const step2 = document.getElementById('step-node-2');
+      step2.className = 'step-item step-completed';
+      document.getElementById('step-icon-2').innerText = '✓';
+      document.getElementById('step-sub-2').innerText = 'Nguyễn Tấn Thành (Đã duyệt)';
+      document.getElementById('step-sub-2').style.color = 'var(--sage)';
+
+      const step3 = document.getElementById('step-node-3');
+      step3.className = 'step-item step-active';
+      document.getElementById('step-sub-3').innerText = 'Đang xem xét duyệt cấp cuối';
+
+      document.getElementById('main-status-tag').className = 'tag tag-pending';
+      document.getElementById('main-status-tag').innerText = 'Đang chờ Giám đốc duyệt (Bước 3)';
+
+      showToast('✓ Giả lập thành công: Kế toán trưởng đã phê duyệt Bước 2!');
+    }
+
+    // Giả lập Manager Reject
+    function simulateManagerReject() {
+      const step2 = document.getElementById('step-node-2');
+      step2.className = 'step-item step-rejected';
+      document.getElementById('step-icon-2').innerText = '✖';
+      document.getElementById('step-sub-2').innerText = 'Bị từ chối (Đã đóng quy trình)';
+      document.getElementById('step-sub-2').style.color = 'var(--rose)';
+
+      document.getElementById('main-status-tag').className = 'tag';
+      document.getElementById('main-status-tag').style.cssText = 'background: var(--rose-soft); color: var(--rose); border: 1px solid var(--rose);';
+      document.getElementById('main-status-tag').innerText = ' Đã bị từ chối (Rejected)';
+
+      showToast('Giả lập: Yêu cầu đã bị từ chối và kết thúc quy trình.');
+    }
+
+    // Hủy yêu cầu
+    function cancelRequestDemo() {
+      if (confirm('Bạn có chắc chắn muốn hủy yêu cầu REQ-2026-0891 này không?')) {
+        document.getElementById('main-status-tag').className = 'tag tag-draft';
+        document.getElementById('main-status-tag').innerText = 'ĐÃ HỦY (CANCELLED)';
+        showToast('Yêu cầu đã được đánh dấu hủy thành công!');
+      }
+    }
+
+    // Khởi tạo theo URL hash nếu có
+    window.addEventListener('DOMContentLoaded', () => {
+      const hash = window.location.hash;
+      if (hash === '#employee-submit') switchScreen(2, document.getElementById('tab-2'));
+      else if (hash === '#request-track') switchScreen(3, document.getElementById('tab-3'));
+      else if (hash === '#executive-dashboard') switchScreen(4, document.getElementById('tab-4'));
+      else switchScreen(1, document.getElementById('tab-1'));
+    });
+  </script>
+</body>
+</html>
